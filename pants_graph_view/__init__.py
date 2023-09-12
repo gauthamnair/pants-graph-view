@@ -1,6 +1,5 @@
 import json
 import re
-import sys
 import pydot
 import networkx as nx
 from importlib import resources
@@ -24,6 +23,7 @@ def read_dot_file_to_nx_graph(file_name: str) -> nx.DiGraph:
         nxg.add_edge(e.get_source(), e.get_destination())
 
     return nxg
+
 
 def rule_label(x: str):
     match = re.search(r"@rule\(([^()]+)\((.*)\)\)", x)
@@ -64,7 +64,7 @@ def parse_value_type(x):
 def nx_graph_to_jsonable_data(g: nx.DiGraph) -> dict:
     roots = [x for x in g.nodes() if g.in_degree(x) == 0]
 
-    nodes = []
+    nodes = {}
     for node_id, ndata in g.nodes.data():
         jnode = {
             '_node_id': node_id,
@@ -74,7 +74,7 @@ def nx_graph_to_jsonable_data(g: nx.DiGraph) -> dict:
         jnode.update(rule_label(ndata['key']))
         jnode.update(parse_value_type(ndata['value']))
         jnode['neighbors'] = list(g.successors(node_id))
-        nodes.append(jnode)
+        nodes[node_id] = jnode
 
     return {
         'roots': roots,
