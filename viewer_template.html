@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        details > details {
+            padding-left: 20px;
+        }
+        .node-preview {
+            padding-left: 20px;
+        }
+        .node-full-key {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+testdata = {
+    "nodes": {
+        "1": {
+            "key": "node1",
+            "value": "value1",
+            "neighbors": ["2", "3"]
+        },
+        "2": {
+            "key": "node2",
+            "value": "value2",
+            "neighbors": ["4"]
+        },
+        "3": {
+            "key": "node3",
+            "value": "value3",
+            "neighbors": []
+        },
+        "4": {
+            "key": "node4",
+            "value": "value4",
+            "neighbors": []
+        }
+    },
+    "roots": ["1"]
+}
+    </script>
+    <script>
+data = INSERT_DATA_HERE
+    </script>
+
+    <div class="node-preview" onClick="expandNode(this)" data-nodeid="14">node14 ...</div>
+    <script>
+
+        function nodeHeadline(nodedata) {
+            let name = (nodedata.rule_short_name || nodedata.key);
+            return nodedata.output_type ? nodedata.output_type + " ← " + name : name;
+        }
+        function createNodePreview(nodeid) {
+            let nodedata = data.nodes[nodeid];
+            let headline = nodeHeadline(nodedata);
+            let root = document.createElement('div');
+            root.setAttribute('class', 'node-preview');
+            root.setAttribute('onClick', 'expandNode(this)');
+            root.setAttribute('data-nodeid', nodeid);
+            root.appendChild(document.createTextNode("▶ " + headline))
+            return root
+        }
+        function createFullNode(nodeid) {
+            let nodedata = data.nodes[nodeid];
+            console.log(nodedata);
+            let headline = nodeHeadline(nodedata);
+            let name = (nodedata.rule_short_name || nodedata.key);
+
+            let nodeRoot = document.createElement('details');
+            nodeRoot.setAttribute('open', '');
+
+            let summary = document.createElement('summary');
+            summary.appendChild(document.createTextNode(headline));
+
+            let valueCollapsible = document.createElement('details');
+            let valueSummary = document.createElement('summary');
+            valueSummary.textContent = 'value';
+            valueCollapsible.appendChild(valueSummary);
+            valueCollapsible.appendChild(document.createTextNode(nodedata.value));
+
+            nodeRoot.appendChild(summary);
+            if (name !== nodedata.key) {
+                let ruleCollapsible = document.createElement('details');
+                let ruleSummary = document.createElement('summary');
+                ruleSummary.textContent = 'rule';
+                ruleCollapsible.appendChild(ruleSummary);
+                ruleCollapsible.appendChild(document.createTextNode(nodedata.key));
+                nodeRoot.appendChild(ruleCollapsible)
+            }
+            nodeRoot.appendChild(valueCollapsible);
+
+            for (const successorId of nodedata.neighbors) {
+                nodeRoot.appendChild(createNodePreview(successorId));
+            }
+
+            return nodeRoot;
+        }
+
+
+
+        function expandNode(element) {
+            let nodeid = element.dataset.nodeid;
+            let newElement = createFullNode(nodeid);
+
+            element.parentNode.replaceChild(newElement, element);
+        }
+    </script>
+
+</body>
+</html>
