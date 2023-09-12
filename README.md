@@ -13,7 +13,7 @@ and if you want you can add the pex somewhere on your `$PATH`
 
 ## Usage
 
-You can try it out in the example-python repo:
+You can try it out from a clone of [example-python](https://github.com/pantsbuild/example-python):
 ```text
 example-python $ pants --engine-visualize-to=dist/ test ::
 ...
@@ -24,6 +24,8 @@ example-python $ pants --engine-visualize-to=dist/ test ::
 example-python $ pants_graph_view.pex dist/graph.005.dot
 Writing to dist/graph.005.html
 ```
-and then open the html file in your browser. `open dist/graph.005.html` would suffice on mac.
+and then open the html file in your browser. `$ open dist/graph.005.html` would suffice on Mac.
 
-## Example files
+## Example input and output
+
+An example of the input and html output of the viewer are in [example](example/).
